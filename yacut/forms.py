@@ -7,13 +7,16 @@ class URLForm(FlaskForm):
     original_link = URLField(
         "Длинная ссылка",
         validators=[
-            DataRequired('Обязательное поле'),
-            URL(message='Некорректная ссылка'),
-        ]
+            DataRequired("Обязательное поле"),
+            URL(message="Некорректная ссылка"),
+        ],
     )
     custom_id = URLField(
-        "Ваш вариант короткой ссылки. До 16 символов",
-        validators=[Optional(), Length(max=16),
-                    Regexp(r"\w{0,16}", message="Недопустимые символы")],
+        "Ваш вариант короткой ссылки",
+        validators=[
+            Optional(),
+            Length(max=16),
+            Regexp(r"[a-zA-Z0-9]", message="Недопустимые символы"),
+        ],
     )
     submit = SubmitField("Создать")

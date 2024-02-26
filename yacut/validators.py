@@ -1,14 +1,9 @@
 import re
 
-from typing import NoReturn
-
 
 def validate_len(
-        value: str,
-        error: Exception,
-        minimum: int = 1,
-        maximum: int = 16
-) -> NoReturn:
+    value: str, error: Exception, minimum: int = 1, maximum: int = 16
+) -> None:
     """
     Проверяет длину value на соответствие заданному диапазону.
 
@@ -23,7 +18,7 @@ def validate_len(
         raise error
 
 
-def validate_data(value: str, error: Exception) -> NoReturn:
+def validate_data(value: str, error: Exception) -> None:
     """
     Проверяет соответствие value регулярному выражению.
 

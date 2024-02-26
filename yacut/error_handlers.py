@@ -1,6 +1,8 @@
+from http import HTTPStatus
+
 from flask import render_template, jsonify
 
-from . import app, db
+from . import app
 
 
 class InvalidAPIUsage(Exception):
@@ -23,10 +25,4 @@ def invalid_api_usage(error):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template("error_pages/404.html"), 404
-
-
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('error_pages/500.html'), 500
+    return render_template("error_pages/404.html"), HTTPStatus.NOT_FOUND
