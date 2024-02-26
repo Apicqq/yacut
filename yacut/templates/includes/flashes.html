@@ -7,9 +7,10 @@
         <h5 class="text-center">
           {% with messages = get_flashed_messages() %}
             {% if messages %}
-              {% for message in messages %}
-                {{ message }}
-              {% endfor %}
+              {{ messages[0] }}
+              {% if messages[1] %}
+                <a href="{{ url_for("forwarder", short_id=messages[1], _external=True) }}">{{ url_for("forwarder", short_id=messages[1], _external=True) }}</a>
+              {% endif %}
             {% endif %}
           {% endwith %}
         </h5>
