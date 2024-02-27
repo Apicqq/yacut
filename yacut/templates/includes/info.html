@@ -5,12 +5,15 @@
     <div class="col-sm">
       <p class="text-center">
       <h5 class="text-center">
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            {{ messages[0] }}
-            {% if messages[1] %}
-              <a href="{{ url_for("forwarder", short_id=messages[1], _external=True) }}">{{ url_for("forwarder", short_id=messages[1], _external=True) }}</a>
+        {% with flashes = get_flashed_messages() %}
+          {% for msg in flashes %}
+            {% if msg %}
+              {{ msg }}
             {% endif %}
+          {% endfor %}
+          {% if not flashes %}
+            {{ result }}
+            <a href="{{ result_url }}">{{ result_url }}</a>
           {% endif %}
         {% endwith %}
       </h5>

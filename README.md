@@ -62,6 +62,16 @@ touch .env
 
 И наполнить его переменными по примеру файла `.env.example`
 
+Открыть консоль:
+```
+flask shell 
+```
+
+И создать базу данных:
+```
+from yacut import db && db.create_all()
+```
+
 Запустить проект:
 ```
 flask run

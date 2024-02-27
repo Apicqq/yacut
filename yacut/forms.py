@@ -2,21 +2,24 @@ from flask_wtf import FlaskForm
 from wtforms.fields.simple import SubmitField, URLField
 from wtforms.validators import DataRequired, Length, Optional, URL, Regexp
 
+from . import constants as const
+
 
 class URLForm(FlaskForm):
     original_link = URLField(
-        "Длинная ссылка",
+        const.FULL_URL,
         validators=[
-            DataRequired("Обязательное поле"),
-            URL(message="Некорректная ссылка"),
+            DataRequired(const.FULL_URL_IS_MANDATORY),
+            URL(message=const.INVALID_URL),
+            Length(min=const.MIN_LENGTH, message=const.INVALID_SYMBOLS),
         ],
     )
     custom_id = URLField(
-        "Ваш вариант короткой ссылки",
+        const.USER_SHORT_URL_VARIANT,
         validators=[
             Optional(),
-            Length(max=16),
-            Regexp(r"[a-zA-Z0-9]", message="Недопустимые символы"),
+            Length(max=const.MAX_LENGTH),
+            Regexp(fr"[{const.ALLOWED_CHARS}]", message=const.INVALID_SYMBOLS),
         ],
     )
-    submit = SubmitField("Создать")
+    submit = SubmitField(const.SUBMIT)
