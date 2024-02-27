@@ -19,13 +19,15 @@ class URLMap(db.Model):
         if short:
             cls.validate_len(
                 short,
-                InvalidAPIUsage(const.INVALID_SHORT_URL,
-                                HTTPStatus.BAD_REQUEST),
+                InvalidAPIUsage(
+                    const.INVALID_SHORT_URL, HTTPStatus.BAD_REQUEST
+                ),
             )
             cls.validate_data(
                 short,
-                InvalidAPIUsage(const.INVALID_SHORT_URL,
-                                HTTPStatus.BAD_REQUEST),
+                InvalidAPIUsage(
+                    const.INVALID_SHORT_URL, HTTPStatus.BAD_REQUEST
+                ),
             )
             if bool(cls.get_original(short)):
                 raise InvalidAPIUsage(
@@ -48,8 +50,9 @@ class URLMap(db.Model):
         """
         url = cls.get_original(short)
         if not url:
-            raise InvalidAPIUsage(const.SHORT_URI_NOT_FOUND,
-                                  HTTPStatus.NOT_FOUND)
+            raise InvalidAPIUsage(
+                const.SHORT_URI_NOT_FOUND, HTTPStatus.NOT_FOUND
+            )
         return url
 
     @classmethod
@@ -77,9 +80,7 @@ class URLMap(db.Model):
 
     @classmethod
     def get_unique_short_id(
-            cls,
-            chars=const.ALLOWED_CHARS,
-            length=const.SHORT_URL_LENGTH
+        cls, chars=const.ALLOWED_CHARS, length=const.SHORT_URL_LENGTH
     ) -> str:
         """
         Генерирует уникальный идентификатор для короткой ссылки.
@@ -90,17 +91,19 @@ class URLMap(db.Model):
         :returns: Уникальный идентификатор.
         """
         short_id = "".join(random.sample(chars, length))
-        return short_id if not bool(
-            cls.get_original(short_id)
-        ) else cls.get_unique_short_id()
+        return (
+            short_id
+            if not bool(cls.get_original(short_id))
+            else cls.get_unique_short_id()
+        )
 
     @classmethod
     def validate_len(
-            cls,
-            value: str,
-            error: Exception,
-            minimum: int = const.MIN_LENGTH,
-            maximum: int = const.MAX_LENGTH
+        cls,
+        value: str,
+        error: Exception,
+        minimum: int = const.MIN_LENGTH,
+        maximum: int = const.MAX_LENGTH,
     ) -> None:
         """
         Проверяет длину value на соответствие заданному диапазону.
@@ -126,8 +129,5 @@ class URLMap(db.Model):
         :raises InvalidAPIUsage: При недопустимом значении.
         """
 
-        if not re.match(fr"^[{const.ALLOWED_CHARS}]+$", value):
+        if not re.match(rf"^[{const.ALLOWED_CHARS}]+$", value):
             raise error
-
-
-
