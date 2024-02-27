@@ -62,14 +62,10 @@ touch .env
 
 И наполнить его переменными по примеру файла `.env.example`
 
-Открыть консоль:
-```
-flask shell 
-```
+Применить миграции:
 
-И создать базу данных:
 ```
-from yacut import db && db.create_all()
+flask db upgrade
 ```
 
 Запустить проект:
@@ -78,5 +74,7 @@ flask run
 ```
 
 Сервис YaCut будет доступен по адресу:  [http://127.0.0.1:5000](http://127.0.0.1:5000)
+
+Документация доступна в файле [openapi.yml](openapi.yml)
 
 Автор: [Никита Смыков](https://github.com/Apicqq)
