@@ -23,7 +23,8 @@ class URLForm(FlaskForm):
             Optional(),
             Length(max=const.SHORT_MAX_LENGTH),
             Regexp(
-                const.REGEXP_SHORT_VALIDATOR_PATTERN, message=const.INVALID_SYMBOLS
+                const.REGEXP_SHORT_VALIDATOR_PATTERN,
+                message=const.INVALID_SYMBOLS,
             ),
         ],
     )
