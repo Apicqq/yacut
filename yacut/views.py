@@ -21,10 +21,13 @@ def index_view():
     except IntegrityError:
         flash(const.SHORT_URI_EXISTS)
     return render_template(
-        "index.html", form=form,
-        result=const.SHORT_URL_READY, short=short,
-        result_url=url_for(const.FORWARDER_FUNC, short_id=short,
-                           _external=True)
+        "index.html",
+        form=form,
+        result=const.SHORT_URL_READY,
+        short=short,
+        result_url=url_for(
+            const.FORWARDER_FUNC, short_id=short, _external=True
+        ),
     )
 
 

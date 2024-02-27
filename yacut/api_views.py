@@ -20,8 +20,8 @@ def add_url():
             const.FULL_URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST
         )
     prepared_url = URLMap.add_url_to_db(
-        original,
-        URLMap.create_short(data.get("custom_id")))
+        original, URLMap.create_short(data.get("custom_id"))
+    )
     response = {
         "url": prepared_url.original,
         "short_link": url_for(
@@ -33,6 +33,7 @@ def add_url():
 
 @app.route("/api/id/<string:short_id>/", methods=("GET",))
 def get_url(short_id):
-    return jsonify(
-        {"url": URLMap.get_by_short(short_id).original}
-    ), HTTPStatus.OK
+    return (
+        jsonify({"url": URLMap.get_by_short(short_id).original}),
+        HTTPStatus.OK,
+    )

@@ -19,7 +19,7 @@ class URLForm(FlaskForm):
         validators=[
             Optional(),
             Length(max=const.MAX_LENGTH),
-            Regexp(fr"[{const.ALLOWED_CHARS}]", message=const.INVALID_SYMBOLS),
+            Regexp(rf"[{const.ALLOWED_CHARS}]", message=const.INVALID_SYMBOLS),
         ],
     )
     submit = SubmitField(const.SUBMIT)
