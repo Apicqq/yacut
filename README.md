@@ -77,6 +77,6 @@ from yacut import db && db.create_all()
 flask run
 ```
 
-Сервис YaCut будет доступен по адресу: `http://127.0.0.1:5000`
+Сервис YaCut будет доступен по адресу:  [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 Автор: [Никита Смыков](https://github.com/Apicqq)
