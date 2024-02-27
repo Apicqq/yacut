@@ -1,3 +1,4 @@
+import re
 from http import HTTPStatus
 
 from flask import jsonify, request, url_for
@@ -17,8 +18,12 @@ def add_url():
     original, short = data.get("url"), data.get("custom_id")
     if original is None:
         raise InvalidAPIUsage(
-            const.FULL_URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST
+            const.URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST
         )
+    if (original and not re.match(
+        const.REGEXP_FULL_VALIDATOR_PATTERN, original
+    )):
+        raise InvalidAPIUsage(const.INVALID_URL, HTTPStatus.BAD_REQUEST)
     if URLMap.get(short):
         raise InvalidAPIUsage(const.SHORT_EXISTS, HTTPStatus.BAD_REQUEST)
     url_map = URLMap.add(original, short)

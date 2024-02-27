@@ -37,8 +37,9 @@ class URLMap(db.Model):
             short = URLMap.get_unique_short_id()
         if (
             len(short) > const.SHORT_MAX_LENGTH
-            or not re.match(const.REGEXP_VALIDATOR_PATTERN, short)
+            or not re.match(const.REGEXP_SHORT_VALIDATOR_PATTERN, short)
             or len(original) > const.MAX_ORIGINAL_URL_LENGTH
+            or not re.match(const.REGEXP_FULL_VALIDATOR_PATTERN, original)
         ):
             return False
         url_map = URLMap(original=original, short=short)
@@ -48,7 +49,7 @@ class URLMap(db.Model):
 
     @staticmethod
     def get_unique_short_id(
-        chars=const.ALLOWED_CHARS, length=const.GENERATED_SHORT_LENGTH
+        chars=const.ALLOWED_CHARS_SHORT, length=const.GENERATED_SHORT_LENGTH
     ) -> str:
         """
         Генерирует уникальный идентификатор для короткой ссылки.

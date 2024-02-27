@@ -9,7 +9,7 @@ class URLForm(FlaskForm):
     original_link = URLField(
         const.FULL_URL,
         validators=[
-            DataRequired(const.FULL_URL_IS_MANDATORY),
+            DataRequired(const.URL_IS_MANDATORY),
             URL(message=const.INVALID_URL),
             Length(
                 max=const.MAX_ORIGINAL_URL_LENGTH,
@@ -23,7 +23,7 @@ class URLForm(FlaskForm):
             Optional(),
             Length(max=const.SHORT_MAX_LENGTH),
             Regexp(
-                const.REGEXP_VALIDATOR_PATTERN, message=const.INVALID_SYMBOLS
+                const.REGEXP_SHORT_VALIDATOR_PATTERN, message=const.INVALID_SYMBOLS
             ),
         ],
     )
