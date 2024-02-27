@@ -11,15 +11,20 @@ class URLForm(FlaskForm):
         validators=[
             DataRequired(const.FULL_URL_IS_MANDATORY),
             URL(message=const.INVALID_URL),
-            Length(min=const.MIN_LENGTH, message=const.INVALID_SYMBOLS),
+            Length(
+                max=const.MAX_ORIGINAL_URL_LENGTH,
+                message=const.INVALID_SYMBOLS,
+            ),
         ],
     )
     custom_id = URLField(
-        const.USER_SHORT_URL_VARIANT,
+        const.USER_SHORT_VARIANT,
         validators=[
             Optional(),
-            Length(max=const.MAX_LENGTH),
-            Regexp(rf"[{const.ALLOWED_CHARS}]", message=const.INVALID_SYMBOLS),
+            Length(max=const.SHORT_MAX_LENGTH),
+            Regexp(
+                const.REGEXP_VALIDATOR_PATTERN, message=const.INVALID_SYMBOLS
+            ),
         ],
     )
     submit = SubmitField(const.SUBMIT)

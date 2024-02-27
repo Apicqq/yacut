@@ -4,19 +4,21 @@ from string import ascii_letters, digits
 
 ALLOWED_CHARS = ascii_letters + digits
 REQUEST_BODY_MISSING = "Отсутствует тело запроса"
-INVALID_SHORT_URL = "Указано недопустимое имя для короткой ссылки"
+INVALID_SHORT = "Указано недопустимое имя для короткой ссылки"
 FULL_URL_IS_MANDATORY = '"url" является обязательным полем!'
-SHORT_URI_EXISTS = "Предложенный вариант короткой ссылки уже существует."
-SHORT_URI_NOT_FOUND = "Указанный id не найден"
-SHORT_URL_READY = "Ваша новая ссылка готова:"
+SHORT_EXISTS = "Предложенный вариант короткой ссылки уже существует."
+SHORT_NOT_FOUND = "Указанный id не найден"
+SHORT_IS_READY = "Ваша новая ссылка готова:"
 FORWARDER_FUNC = "forwarder"
 FULL_URL = "Длинная ссылка"
 MANDATORY_FIELD = "Обязательное поле"
 INVALID_URL = "Некорректная ссылка"
-USER_SHORT_URL_VARIANT = "Ваш вариант короткой ссылки:"
+USER_SHORT_VARIANT = "Ваш вариант короткой ссылки:"
 INVALID_SYMBOLS = "Некорректные символы"
 SUBMIT = "Создать"
 
-MIN_LENGTH = 1
-MAX_LENGTH = 16
-SHORT_URL_LENGTH = 6
+SHORT_MAX_LENGTH = 16
+GENERATED_SHORT_LENGTH = 6
+REGEXP_VALIDATOR_PATTERN = rf"^[{ALLOWED_CHARS}]+$"
+MAX_ORIGINAL_URL_LENGTH = 2048
+GENERATED_SHORT_RETRIES = 10

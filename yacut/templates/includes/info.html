@@ -6,16 +6,14 @@
       <p class="text-center">
       <h5 class="text-center">
         {% with flashes = get_flashed_messages() %}
-          {% for msg in flashes %}
-            {% if msg %}
-              {{ msg }}
-            {% endif %}
+          {% for message in flashes %}
+            {{ message }}
           {% endfor %}
-          {% if not flashes %}
-            {{ result }}
-            <a href="{{ result_url }}">{{ result_url }}</a>
-          {% endif %}
         {% endwith %}
+        {% if result_url %}
+          Ваша ссылка готова:
+          <a href="{{ result_url }}">{{ result_url }} </a>
+        {% endif %}
       </h5>
       </p>
     </div>
