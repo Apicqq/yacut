@@ -3,7 +3,12 @@ from http import HTTPStatus
 from flask import jsonify, request, url_for
 
 from . import app, constants as const
-from .error_handlers import InvalidAPIUsage
+from .error_handlers import (
+    InvalidAPIUsage,
+    InvalidShortException,
+    InvalidURLException,
+    ShortExistsException,
+)
 from .models import URLMap
 
 
@@ -19,11 +24,11 @@ def add_url():
         raise InvalidAPIUsage(const.URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST)
     try:
         url_map = URLMap.add(original, short)
-    except RuntimeError:
+    except ShortExistsException:
         raise InvalidAPIUsage(const.SHORT_EXISTS, HTTPStatus.BAD_REQUEST)
-    except ValueError:
+    except InvalidShortException:
         raise InvalidAPIUsage(const.INVALID_SHORT, HTTPStatus.BAD_REQUEST)
-    except TypeError:
+    except InvalidURLException:
         raise InvalidAPIUsage(const.INVALID_URL, HTTPStatus.BAD_REQUEST)
     return (
         jsonify(

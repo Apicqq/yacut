@@ -3,6 +3,11 @@ import re
 from datetime import datetime as dt
 
 from . import constants as const, db
+from .error_handlers import (
+    InvalidURLException,
+    InvalidShortException,
+    ShortExistsException,
+)
 
 
 class URLMap(db.Model):
@@ -42,16 +47,14 @@ class URLMap(db.Model):
             not re.match(const.REGEXP_FULL_VALIDATOR_PATTERN, original)
             or len(original) > const.MAX_ORIGINAL_LENGTH
         ):
-            raise TypeError(const.INVALID_URL)
-        #  Не придумал, какое тут бросить исключение,
-        #  ведь я не могу включать в этот код свои собственные
+            raise InvalidURLException(const.INVALID_URL)
         if short:
             if URLMap.get(short):
-                raise RuntimeError(const.SHORT_EXISTS)
+                raise ShortExistsException(const.SHORT_EXISTS)
             if len(short) > const.SHORT_MAX_LENGTH or not re.match(
                 const.REGEXP_SHORT_VALIDATOR_PATTERN, short
             ):
-                raise ValueError(const.INVALID_SHORT)
+                raise InvalidShortException(const.INVALID_SHORT)
         else:
             short = URLMap.get_unique_short_id()
         url_map = URLMap(original=original, short=short)
