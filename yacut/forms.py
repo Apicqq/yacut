@@ -12,7 +12,7 @@ class URLForm(FlaskForm):
             DataRequired(const.URL_IS_MANDATORY),
             URL(message=const.INVALID_URL),
             Length(
-                max=const.MAX_ORIGINAL_URL_LENGTH,
+                max=const.MAX_ORIGINAL_LENGTH,
                 message=const.INVALID_SYMBOLS,
             ),
         ],

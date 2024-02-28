@@ -1,4 +1,3 @@
-import re
 from http import HTTPStatus
 
 from flask import jsonify, request, url_for
@@ -18,22 +17,21 @@ def add_url():
     original, short = data.get("url"), data.get("custom_id")
     if original is None:
         raise InvalidAPIUsage(const.URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST)
-    if original and not re.match(
-        const.REGEXP_FULL_VALIDATOR_PATTERN, original
-    ):
-        raise InvalidAPIUsage(const.INVALID_URL, HTTPStatus.BAD_REQUEST)
-    if URLMap.get(short):
+    try:
+        url_map = URLMap.add(original, short)
+    except RuntimeError:
         raise InvalidAPIUsage(const.SHORT_EXISTS, HTTPStatus.BAD_REQUEST)
-    url_map = URLMap.add(original, short)
-    if not url_map:
+    except ValueError:
         raise InvalidAPIUsage(const.INVALID_SHORT, HTTPStatus.BAD_REQUEST)
+    except TypeError:
+        raise InvalidAPIUsage(const.INVALID_URL, HTTPStatus.BAD_REQUEST)
     return (
         jsonify(
             {
                 "url": url_map.original,
                 "short_link": url_for(
                     const.FORWARDER_FUNC,
-                    short_id=url_map.short,
+                    short=url_map.short,
                     _external=True,
                 ),
             }
@@ -42,9 +40,9 @@ def add_url():
     )
 
 
-@app.route("/api/id/<string:short_id>/", methods=("GET",))
-def get_url(short_id):
-    original = URLMap.get(short_id)
+@app.route("/api/id/<string:short>/", methods=("GET",))
+def get_url(short):
+    original = URLMap.get(short)
     if not original:
         raise InvalidAPIUsage(const.SHORT_NOT_FOUND, HTTPStatus.NOT_FOUND)
     return (

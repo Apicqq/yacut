@@ -20,6 +20,8 @@ SUBMIT = "Создать"
 SHORT_MAX_LENGTH = 16
 GENERATED_SHORT_LENGTH = 6
 REGEXP_SHORT_VALIDATOR_PATTERN = rf"^[{ALLOWED_CHARS_SHORT}]+$"
-REGEXP_FULL_VALIDATOR_PATTERN = r"http(s)?:\/\/[a-zA-Z\/]+"
-MAX_ORIGINAL_URL_LENGTH = 2048
+REGEXP_FULL_VALIDATOR_PATTERN = rf"http(s)?:\/\/[{ALLOWED_CHARS_SHORT}]+"
+#  Без этой регулярки через API проходят ссылки, состоящие только из текста.
+#  На это нет тестов, но, мне кажется, стоит закрыть эту дыру.
+MAX_ORIGINAL_LENGTH = 2048
 GENERATED_SHORT_RETRIES = 10

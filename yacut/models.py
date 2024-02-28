@@ -1,14 +1,13 @@
 import random
 import re
 from datetime import datetime as dt
-from typing import Union
 
 from . import constants as const, db
 
 
 class URLMap(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    original = db.Column(db.Text, nullable=False)
+    original = db.Column(db.Text(const.MAX_ORIGINAL_LENGTH), nullable=False)
     short = db.Column(
         db.String(const.SHORT_MAX_LENGTH), unique=True, nullable=False
     )
@@ -24,7 +23,7 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def add(original, short) -> Union["URLMap", bool]:
+    def add(original: str, short: str) -> "URLMap":
         """
         Добавляет URLMap в базу данных.
 
@@ -33,15 +32,22 @@ class URLMap(db.Model):
 
         :returns: Добавленный URLMap.
         """
-        if not short:
-            short = URLMap.get_unique_short_id()
-        if (
-            len(short) > const.SHORT_MAX_LENGTH
-            or not re.match(const.REGEXP_SHORT_VALIDATOR_PATTERN, short)
-            or len(original) > const.MAX_ORIGINAL_URL_LENGTH
-            or not re.match(const.REGEXP_FULL_VALIDATOR_PATTERN, original)
+        if original and (
+            not re.match(const.REGEXP_FULL_VALIDATOR_PATTERN, original)
+            or len(original) > const.MAX_ORIGINAL_LENGTH
         ):
-            return False
+            raise TypeError(const.INVALID_URL)
+        #  Не придумал, какое тут бросить исключение,
+        #  ведь я не могу включать в этот код свои собственные
+        if short:
+            if URLMap.get(short):
+                raise RuntimeError(const.SHORT_EXISTS)
+            if len(short) > const.SHORT_MAX_LENGTH or not re.match(
+                    const.REGEXP_SHORT_VALIDATOR_PATTERN, short
+            ):
+                raise ValueError(const.INVALID_SHORT)
+        else:
+            short = URLMap.get_unique_short_id()
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()
@@ -61,6 +67,6 @@ class URLMap(db.Model):
         """
         for _ in range(const.GENERATED_SHORT_RETRIES):
             short_id = "".join(random.sample(chars, length))
-            if not URLMap.get(short_id):
-                return short_id
-            continue
+            if URLMap.get(short_id):
+                continue
+            return short_id
