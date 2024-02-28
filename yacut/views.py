@@ -16,8 +16,8 @@ def index_view():
         url_map = URLMap.add(
             form.original_link.data, form.custom_id.data, through_form=True
         )
-    except ShortExistsException:
-        flash(const.SHORT_EXISTS)
+    except ShortExistsException as exception:
+        flash(exception.args[0])
         return render_template("index.html", form=form)
     return render_template(
         "index.html",
