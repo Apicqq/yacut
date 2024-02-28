@@ -30,7 +30,7 @@ def index_view():
 
 @app.route("/<string:short>", methods=("GET",))
 def forwarder(short):
-    original = URLMap.get(short)
-    if original is None:
+    url_map = URLMap.get(short)
+    if url_map is None:
         abort(HTTPStatus.NOT_FOUND)
-    return redirect(original.original)
+    return redirect(url_map.original)
