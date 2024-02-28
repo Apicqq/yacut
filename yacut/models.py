@@ -28,7 +28,7 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def add(original: str, short: str) -> "URLMap":
+    def add(original: str, short: str, through_form=False) -> "URLMap":
         """
         Добавляет URLMap в базу данных. Валидирует входящие параметры,
         если они существуют. В случае провала валидации
@@ -36,27 +36,36 @@ class URLMap(db.Model):
 
         :param original: Оригинальная ссылка.
         :param short: Короткая ссылка.
+        :param through_form: Флаг, пропускающий некоторые проверки в случае,
+        если данные поступают из формы, где валидация осуществляется
+        самой формой.
 
         :returns: Добавленный URLMap.
 
-        :raises ValueError: Если короткая ссылка не прошла валидацию.
-        :raises TypeError: Если оригинальная ссылка не прошла валидацию.
-        :raises RuntimeError: Если короткая ссылка уже существует.
+        :raises InvalidShortException: Если короткая ссылка
+        не прошла валидацию.
+        :raises InvalidURLException: Если оригинальная ссылка
+        не прошла валидацию.
+        :raises ShortExistsException: Если короткая ссылка уже существует.
         """
-        if original and (
-            not re.match(const.REGEXP_FULL_VALIDATOR_PATTERN, original)
-            or len(original) > const.MAX_ORIGINAL_LENGTH
-        ):
-            raise InvalidURLException(const.INVALID_URL)
-        if short:
-            if URLMap.get(short):
-                raise ShortExistsException(const.SHORT_EXISTS)
-            if len(short) > const.SHORT_MAX_LENGTH or not re.match(
-                const.REGEXP_SHORT_VALIDATOR_PATTERN, short
-            ):
-                raise InvalidShortException(const.INVALID_SHORT)
+        if through_form:
+            if short:
+                if URLMap.get(short):
+                    raise ShortExistsException(const.SHORT_EXISTS)
+            else:
+                short = URLMap.get_unique_short_id()
         else:
-            short = URLMap.get_unique_short_id()
+            if len(original) > const.MAX_ORIGINAL_LENGTH:
+                raise InvalidURLException(const.INVALID_URL)
+            if short:
+                if len(short) > const.SHORT_MAX_LENGTH or not re.match(
+                    const.REGEXP_SHORT_VALIDATOR_PATTERN, short
+                ):
+                    raise InvalidShortException(const.INVALID_SHORT)
+                if URLMap.get(short):
+                    raise ShortExistsException(const.SHORT_EXISTS)
+            else:
+                short = URLMap.get_unique_short_id()
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()
@@ -76,6 +85,6 @@ class URLMap(db.Model):
         """
         for _ in range(const.GENERATED_SHORT_RETRIES):
             short_id = "".join(random.sample(chars, length))
-            if URLMap.get(short_id):
-                continue
-            return short_id
+            if not URLMap.get(short_id):
+                return short_id
+        return URLMap.get_unique_short_id(chars, length)

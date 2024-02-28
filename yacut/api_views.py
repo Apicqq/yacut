@@ -5,9 +5,6 @@ from flask import jsonify, request, url_for
 from . import app, constants as const
 from .error_handlers import (
     InvalidAPIUsage,
-    InvalidShortException,
-    InvalidURLException,
-    ShortExistsException,
 )
 from .models import URLMap
 
@@ -19,17 +16,12 @@ def add_url():
         raise InvalidAPIUsage(
             const.REQUEST_BODY_MISSING, HTTPStatus.BAD_REQUEST
         )
-    original, short = data.get("url"), data.get("custom_id")
-    if original is None:
+    if data.get("url") is None:
         raise InvalidAPIUsage(const.URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST)
     try:
-        url_map = URLMap.add(original, short)
-    except ShortExistsException:
-        raise InvalidAPIUsage(const.SHORT_EXISTS, HTTPStatus.BAD_REQUEST)
-    except InvalidShortException:
-        raise InvalidAPIUsage(const.INVALID_SHORT, HTTPStatus.BAD_REQUEST)
-    except InvalidURLException:
-        raise InvalidAPIUsage(const.INVALID_URL, HTTPStatus.BAD_REQUEST)
+        url_map = URLMap.add(data.get("url"), data.get("custom_id"))
+    except Exception as exception:
+        raise InvalidAPIUsage(exception.args[0])
     return (
         jsonify(
             {
@@ -47,10 +39,10 @@ def add_url():
 
 @app.route("/api/id/<string:short>/", methods=("GET",))
 def get_url(short):
-    original = URLMap.get(short)
-    if not original:
+    url_map = URLMap.get(short)
+    if not url_map:
         raise InvalidAPIUsage(const.SHORT_NOT_FOUND, HTTPStatus.NOT_FOUND)
     return (
-        jsonify({"url": original.original}),
+        jsonify({"url": url_map.original}),
         HTTPStatus.OK,
     )

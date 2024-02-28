@@ -14,7 +14,7 @@ def index_view():
     if not form.validate_on_submit():
         return render_template("index.html", form=form)
     try:
-        url_map = URLMap.add(original, short)
+        url_map = URLMap.add(original, short, through_form=True)
     except ShortExistsException:
         flash(const.SHORT_EXISTS)
         return render_template("index.html", form=form)
