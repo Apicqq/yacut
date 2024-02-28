@@ -75,6 +75,6 @@ flask run
 
 Сервис YaCut будет доступен по адресу:  [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
-Документация доступна в файле [openapi.yml](openapi.yml)
+Документация доступна в файле [openapi.yml](https://github.com/Apicqq/yacut/blob/master/openapi.yml)
 
 Автор: [Никита Смыков](https://github.com/Apicqq)
