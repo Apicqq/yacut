@@ -14,7 +14,7 @@ def index_view():
         return render_template("index.html", form=form)
     try:
         url_map = URLMap.add(
-            form.original_link.data, form.custom_id.data, thorough=False
+            form.original_link.data, form.custom_id.data, validate=False
         )
     except (ShortExistsException, RuntimeError) as exception:
         flash(str(exception))

@@ -28,7 +28,7 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def add(original: str, short: str, thorough: bool = True) -> "URLMap":
+    def add(original: str, short: str, validate: bool = True) -> "URLMap":
         """
         Добавляет URLMap в базу данных. Валидирует входящие параметры,
         если они существуют. В случае провала валидации
@@ -36,7 +36,7 @@ class URLMap(db.Model):
 
         :param original: Оригинальная ссылка.
         :param short: Короткая ссылка.
-        :param thorough: Флаг, пропускающий некоторые проверки в случае,
+        :param validate: Флаг, пропускающий некоторые проверки в случае,
          если необходимо проверить только наличие короткого идентификатора
          в БД.
 
@@ -48,9 +48,7 @@ class URLMap(db.Model):
          не прошла валидацию.
         :raises ShortExistsException: Если короткая ссылка уже существует.
         """
-        if not thorough and not short:
-            short = URLMap.get_unique_short_id()
-        else:
+        if validate:
             if len(original) > const.MAX_ORIGINAL_LENGTH:
                 raise InvalidURLException(const.INVALID_URL)
             if short:
@@ -58,10 +56,11 @@ class URLMap(db.Model):
                     const.REGEXP_SHORT_VALIDATOR_PATTERN, short
                 ):
                     raise InvalidShortException(const.INVALID_SHORT)
-            else:
-                short = URLMap.get_unique_short_id()
-        if short and URLMap.get(short):
-            raise ShortExistsException(const.SHORT_EXISTS)
+        if short:
+            if URLMap.get(short):
+                raise ShortExistsException(const.SHORT_EXISTS)
+        else:
+            short = URLMap.get_unique_short_id()
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()
