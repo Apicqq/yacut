@@ -16,6 +16,10 @@ INVALID_URL = "Некорректная ссылка"
 USER_SHORT_VARIANT = "Ваш вариант короткой ссылки:"
 INVALID_SYMBOLS = "Некорректные символы"
 SUBMIT = "Создать"
+ERROR_WHILE_GENERATING_SHORT = (
+    "Произошла ошибка при генерации короткой ссылки."
+    " Пожалуйста, попробуйте ещё раз."
+)
 
 SHORT_MAX_LENGTH = 16
 GENERATED_SHORT_LENGTH = 6

@@ -5,6 +5,9 @@ from flask import jsonify, request, url_for
 from . import app, constants as const
 from .error_handlers import (
     InvalidAPIUsage,
+    InvalidURLException,
+    ShortExistsException,
+    InvalidShortException,
 )
 from .models import URLMap
 
@@ -20,8 +23,13 @@ def add_url():
         raise InvalidAPIUsage(const.URL_IS_MANDATORY, HTTPStatus.BAD_REQUEST)
     try:
         url_map = URLMap.add(data.get("url"), data.get("custom_id"))
-    except Exception as exception:
-        raise InvalidAPIUsage(exception.args[0])
+    except (
+        InvalidURLException,
+        ShortExistsException,
+        InvalidShortException,
+        RuntimeError,
+    ) as exception:
+        raise InvalidAPIUsage(str(exception))
     return (
         jsonify(
             {

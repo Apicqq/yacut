@@ -2,8 +2,8 @@ from http import HTTPStatus
 
 from flask import abort, redirect, render_template, flash, url_for
 
-from .error_handlers import ShortExistsException
 from . import app, forms, constants as const
+from .error_handlers import ShortExistsException
 from .models import URLMap
 
 
@@ -14,10 +14,10 @@ def index_view():
         return render_template("index.html", form=form)
     try:
         url_map = URLMap.add(
-            form.original_link.data, form.custom_id.data, through_form=True
+            form.original_link.data, form.custom_id.data, thorough=False
         )
-    except ShortExistsException as exception:
-        flash(exception.args[0])
+    except (ShortExistsException, RuntimeError) as exception:
+        flash(str(exception))
         return render_template("index.html", form=form)
     return render_template(
         "index.html",
