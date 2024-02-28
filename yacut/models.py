@@ -25,12 +25,18 @@ class URLMap(db.Model):
     @staticmethod
     def add(original: str, short: str) -> "URLMap":
         """
-        Добавляет URLMap в базу данных.
+        Добавляет URLMap в базу данных. Валидирует входящие параметры,
+        если они существуют. В случае провала валидации
+        выбрасывает соответствующее исключение.
 
         :param original: Оригинальная ссылка.
         :param short: Короткая ссылка.
 
         :returns: Добавленный URLMap.
+
+        :raises ValueError: Если короткая ссылка не прошла валидацию.
+        :raises TypeError: Если оригинальная ссылка не прошла валидацию.
+        :raises RuntimeError: Если короткая ссылка уже существует.
         """
         if original and (
             not re.match(const.REGEXP_FULL_VALIDATOR_PATTERN, original)
