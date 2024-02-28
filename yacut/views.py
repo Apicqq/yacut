@@ -10,11 +10,12 @@ from .models import URLMap
 @app.route("/", methods=("GET", "POST"))
 def index_view():
     form = forms.URLForm()
-    original, short = form.original_link.data, form.custom_id.data
     if not form.validate_on_submit():
         return render_template("index.html", form=form)
     try:
-        url_map = URLMap.add(original, short, through_form=True)
+        url_map = URLMap.add(
+            form.original_link.data, form.custom_id.data, through_form=True
+        )
     except ShortExistsException:
         flash(const.SHORT_EXISTS)
         return render_template("index.html", form=form)
