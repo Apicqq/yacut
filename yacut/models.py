@@ -43,7 +43,7 @@ class URLMap(db.Model):
             if URLMap.get(short):
                 raise RuntimeError(const.SHORT_EXISTS)
             if len(short) > const.SHORT_MAX_LENGTH or not re.match(
-                    const.REGEXP_SHORT_VALIDATOR_PATTERN, short
+                const.REGEXP_SHORT_VALIDATOR_PATTERN, short
             ):
                 raise ValueError(const.INVALID_SHORT)
         else:
